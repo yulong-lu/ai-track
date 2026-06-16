@@ -30,6 +30,7 @@ describe('readFeed', () => {
     const mockUrl = 'https://blob.vercel.com/ai-track/feed.json';
     vi.mocked(list).mockResolvedValue({ blobs: [{ url: mockUrl }], cursor: undefined, hasMore: false } as any);
     vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
       json: async () => MOCK_FEED,
     } as Response);
 
@@ -75,15 +76,14 @@ describe('tryAcquireLock', () => {
 });
 
 describe('writeFeed', () => {
-  it('deletes existing blobs and writes new feed', async () => {
-    const existingUrl = 'https://blob.vercel.com/ai-track/feed.json';
-    vi.mocked(list).mockResolvedValue({ blobs: [{ url: existingUrl }], cursor: undefined, hasMore: false } as any);
-    vi.mocked(del).mockResolvedValue(undefined as any);
-    vi.mocked(put).mockResolvedValue({ url: existingUrl } as any);
+  it('writes feed blob with correct options (overwrites in place)', async () => {
+    const feedUrl = 'https://blob.vercel.com/ai-track/feed.json';
+    vi.mocked(put).mockResolvedValue({ url: feedUrl } as any);
 
     await writeFeed(MOCK_FEED);
 
-    expect(del).toHaveBeenCalled();
+    expect(list).not.toHaveBeenCalled();
+    expect(del).not.toHaveBeenCalled();
     expect(put).toHaveBeenCalledWith(
       expect.stringContaining('feed'),
       expect.any(String),
