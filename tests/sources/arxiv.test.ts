@@ -45,4 +45,12 @@ describe('fetchArXiv', () => {
     const items = await fetchArXiv();
     expect(items.length).toBeLessThanOrEqual(15);
   });
+
+  it('throws on HTTP error', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: false,
+      status: 503,
+    } as Response);
+    await expect(fetchArXiv()).rejects.toThrow('arXiv RSS failed: 503');
+  });
 });

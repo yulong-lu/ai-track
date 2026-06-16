@@ -17,9 +17,8 @@ export async function fetchArXiv(): Promise<RawItem[]> {
     // Strip arXiv ID prefix: "[2506.12345] Title" → "Title"
     const title = (item.title ?? '').replace(/^\[\d+\.\d+\]\s*/, '').trim();
     const url = item.link ?? '';
-    const excerpt = item.content
-      ? item.content.replace(/<[^>]+>/g, '').slice(0, 500)
-      : item.contentSnippet?.slice(0, 500);
+    const rawExcerpt = item.content?.replace(/<[^>]+>/g, '').trim() || item.contentSnippet;
+    const excerpt = rawExcerpt?.slice(0, 500);
 
     return {
       id: url,
