@@ -1,17 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+const mockCreate = vi.fn();
+
 vi.mock('@/lib/analysis/deepseekClient', () => ({
-  deepseek: {
+  getDeepseekClient: () => ({
     chat: {
       completions: {
-        create: vi.fn(),
+        create: mockCreate,
       },
     },
-  },
+  }),
 }));
 
 import { analyzeItems } from '@/lib/analysis/analyze';
-import { deepseek } from '@/lib/analysis/deepseekClient';
 import type { RawItem } from '@/lib/sources/types';
 
 const RAW_ITEMS: RawItem[] = [
@@ -44,7 +45,7 @@ const MOCK_RESPONSE = {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  vi.mocked(deepseek.chat.completions.create).mockResolvedValue(MOCK_RESPONSE as any);
+  mockCreate.mockResolvedValue(MOCK_RESPONSE as any);
 });
 
 describe('analyzeItems', () => {
@@ -62,7 +63,7 @@ describe('analyzeItems', () => {
   });
 
   it('drops items where analysis id is missing from response', async () => {
-    vi.mocked(deepseek.chat.completions.create).mockResolvedValueOnce({
+    mockCreate.mockResolvedValueOnce({
       choices: [{ message: { content: JSON.stringify({ results: [] }) } }],
     } as any);
     const items = await analyzeItems(RAW_ITEMS);
@@ -70,11 +71,11 @@ describe('analyzeItems', () => {
   });
 
   it('retries once on failure then skips batch', async () => {
-    vi.mocked(deepseek.chat.completions.create)
+    mockCreate
       .mockRejectedValueOnce(new Error('timeout'))
       .mockRejectedValueOnce(new Error('timeout'));
     const items = await analyzeItems(RAW_ITEMS);
     expect(items).toHaveLength(0); // batch skipped after 2 failures
-    expect(deepseek.chat.completions.create).toHaveBeenCalledTimes(2);
+    expect(mockCreate).toHaveBeenCalledTimes(2);
   });
 });

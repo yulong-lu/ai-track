@@ -1,5 +1,5 @@
 import 'server-only';
-import { deepseek } from './deepseekClient';
+import { getDeepseekClient } from './deepseekClient';
 import { SYSTEM_PROMPT, buildUserPrompt } from './prompts';
 import type { RawItem } from '@/lib/sources/types';
 import type { FeedItem, Category } from './types';
@@ -38,7 +38,7 @@ async function analyzeBatch(items: RawItem[], attempt = 0): Promise<BatchResult[
   }));
 
   try {
-    const response = await deepseek.chat.completions.create({
+    const response = await getDeepseekClient().chat.completions.create({
       model: 'deepseek-chat',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
