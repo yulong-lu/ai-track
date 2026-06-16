@@ -11,24 +11,24 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@vercel/blob": "^2.4.0",
     "next": "^15.0.0",
+    "node-html-parser": "^6.1.0",
+    "openai": "^4.67.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "openai": "^4.67.0",
-    "@vercel/blob": "^0.27.0",
     "rss-parser": "^3.13.0",
-    "node-html-parser": "^6.1.0",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
     "@types/node": "^20.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "vitest": "^2.0.0",
     "@vitejs/plugin-react": "^4.0.0",
-    "@testing-library/react": "^16.0.0",
-    "@testing-library/jest-dom": "^6.0.0",
-    "jsdom": "^25.0.0"
+    "jsdom": "^25.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0"
   }
 }
