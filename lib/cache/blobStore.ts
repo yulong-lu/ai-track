@@ -6,6 +6,13 @@ import { FEED_BLOB_KEY, LOCK_BLOB_KEY, LOCK_TTL_MS } from './constants';
 // Cache the feed URL within a warm serverless instance to avoid repeated list() calls
 let _feedUrl: string | null = null;
 
+function fetchBlob(url: string): Promise<Response> {
+  return fetch(url, {
+    cache: 'no-store',
+    headers: { Authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN ?? ''}` },
+  });
+}
+
 export async function readFeed(): Promise<CachedFeed | null> {
   try {
     if (!_feedUrl) {
@@ -13,7 +20,7 @@ export async function readFeed(): Promise<CachedFeed | null> {
       if (blobs.length === 0) return null;
       _feedUrl = blobs[0].url;
     }
-    const res = await fetch(_feedUrl, { cache: 'no-store' });
+    const res = await fetchBlob(_feedUrl);
     if (!res.ok) { _feedUrl = null; return null; }
     return (await res.json()) as CachedFeed;
   } catch {
@@ -25,7 +32,7 @@ export async function readFeed(): Promise<CachedFeed | null> {
 export async function writeFeed(feed: CachedFeed): Promise<void> {
   // put() with addRandomSuffix: false overwrites the existing blob — no list/del needed
   const result = await put(FEED_BLOB_KEY, JSON.stringify(feed), {
-    access: 'public',
+    access: 'private',
     contentType: 'application/json',
     addRandomSuffix: false,
   });
@@ -36,7 +43,7 @@ export async function tryAcquireLock(): Promise<boolean> {
   const { blobs } = await list({ prefix: LOCK_BLOB_KEY });
 
   if (blobs.length > 0) {
-    const res = await fetch(blobs[0].url);
+    const res = await fetchBlob(blobs[0].url);
     const lock = (await res.json()) as LockBlob;
     if (Date.now() - lock.acquiredAt < LOCK_TTL_MS) return false;
     // Stale lock — clean up before re-acquiring
@@ -44,7 +51,7 @@ export async function tryAcquireLock(): Promise<boolean> {
   }
 
   await put(LOCK_BLOB_KEY, JSON.stringify({ acquiredAt: Date.now() } satisfies LockBlob), {
-    access: 'public',
+    access: 'private',
     contentType: 'application/json',
     addRandomSuffix: false,
   });
