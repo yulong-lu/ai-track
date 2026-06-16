@@ -73,3 +73,33 @@ describe('tryAcquireLock', () => {
     expect(del).toHaveBeenCalled(); // stale lock was cleaned up
   });
 });
+
+describe('writeFeed', () => {
+  it('deletes existing blobs and writes new feed', async () => {
+    const existingUrl = 'https://blob.vercel.com/ai-track/feed.json';
+    vi.mocked(list).mockResolvedValue({ blobs: [{ url: existingUrl }], cursor: undefined, hasMore: false } as any);
+    vi.mocked(del).mockResolvedValue(undefined as any);
+    vi.mocked(put).mockResolvedValue({ url: existingUrl } as any);
+
+    await writeFeed(MOCK_FEED);
+
+    expect(del).toHaveBeenCalled();
+    expect(put).toHaveBeenCalledWith(
+      expect.stringContaining('feed'),
+      expect.any(String),
+      expect.objectContaining({ addRandomSuffix: false, contentType: 'application/json' })
+    );
+  });
+});
+
+describe('releaseLock', () => {
+  it('deletes the lock blob', async () => {
+    const lockUrl = 'https://blob.vercel.com/ai-track/lock.json';
+    vi.mocked(list).mockResolvedValue({ blobs: [{ url: lockUrl }], cursor: undefined, hasMore: false } as any);
+    vi.mocked(del).mockResolvedValue(undefined as any);
+
+    await releaseLock();
+
+    expect(del).toHaveBeenCalled();
+  });
+});
