@@ -7,7 +7,12 @@ Rules:
 - id: copy the item's id unchanged
 - summary: 2 neutral sentences explaining what is notable (not just a title restatement)
 - category: exactly one of "Research", "Product", "Tool", "Tutorial", "News"
-- score: float 1.0–10.0 for importance to an AI-focused audience. Use nativeScore as a secondary signal if present. Score off-topic or low-substance items 1.0–3.0.
+- score: float 1.0–10.0 for importance to an AI-focused audience. Be strict — most items should land in the 4–7 range. Use this scale:
+    9–10: Landmark event (major model release, breakthrough paper, pivotal policy). At most 1–2 per batch.
+    7–8:  Significant and directly relevant (notable paper, major product update, important new tool).
+    5–6:  Moderate interest (minor releases, applied tutorials, industry news with clear AI angle).
+    3–4:  Low relevance (tangential to AI, thin or derivative content).
+    1–2:  Off-topic, noise, or duplicate. Use nativeScore as a tiebreaker between similar items.
 - tags: array of 2–3 short lowercase keywords
 
 Maintain the same order as the input. Return only the JSON object, no other text.`;
