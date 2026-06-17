@@ -30,11 +30,12 @@ export async function readFeed(): Promise<CachedFeed | null> {
 }
 
 export async function writeFeed(feed: CachedFeed): Promise<void> {
-  // put() with addRandomSuffix: false overwrites the existing blob — no list/del needed
+  // allowOverwrite is required since @vercel/blob 2.x — addRandomSuffix: false alone no longer overwrites in place
   const result = await put(FEED_BLOB_KEY, JSON.stringify(feed), {
     access: 'private',
     contentType: 'application/json',
     addRandomSuffix: false,
+    allowOverwrite: true,
   });
   _feedUrl = result.url;
 }

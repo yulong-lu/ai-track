@@ -87,7 +87,7 @@ describe('writeFeed', () => {
     expect(put).toHaveBeenCalledWith(
       expect.stringContaining('feed'),
       expect.any(String),
-      expect.objectContaining({ addRandomSuffix: false, contentType: 'application/json' })
+      expect.objectContaining({ addRandomSuffix: false, allowOverwrite: true, contentType: 'application/json' })
     );
   });
 });

@@ -5,9 +5,9 @@ const MOCK_RSS = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
     <item>
-      <title>Claude 4 announcement</title>
-      <link>https://www.anthropic.com/news/claude-4</link>
-      <description>Anthropic announces Claude 4...</description>
+      <title>GPT-5 announcement</title>
+      <link>https://openai.com/blog/gpt-5</link>
+      <description>OpenAI announces GPT-5...</description>
       <pubDate>Mon, 15 Jun 2026 00:00:00 GMT</pubDate>
     </item>
   </channel>
@@ -23,18 +23,18 @@ beforeEach(() => {
 describe('fetchBlogs', () => {
   it('returns items with correct sourceLabel', async () => {
     const items = await fetchBlogs();
-    // 5 feeds × 1 item each = 5 items
-    expect(items.length).toBe(5);
-    expect(items.some(i => i.sourceLabel === 'Anthropic')).toBe(true);
+    // 3 feeds × 1 item each = 3 items
+    expect(items.length).toBe(3);
+    expect(items.some(i => i.sourceLabel === 'OpenAI')).toBe(true);
   });
 
   it('normalizes to RawItem shape', async () => {
     const items = await fetchBlogs();
-    const anthropic = items.find(i => i.sourceLabel === 'Anthropic')!;
-    expect(anthropic).toMatchObject({
+    const openai = items.find(i => i.sourceLabel === 'OpenAI')!;
+    expect(openai).toMatchObject({
       source: 'blog',
-      title: 'Claude 4 announcement',
-      url: 'https://www.anthropic.com/news/claude-4',
+      title: 'GPT-5 announcement',
+      url: 'https://openai.com/blog/gpt-5',
     });
   });
 
@@ -44,6 +44,6 @@ describe('fetchBlogs', () => {
       .mockResolvedValue({ ok: true, text: async () => MOCK_RSS } as Response);
 
     const items = await fetchBlogs();
-    expect(items.length).toBe(4); // 4 remaining feeds succeeded
+    expect(items.length).toBe(2); // 2 remaining feeds succeeded
   });
 });

@@ -4,11 +4,9 @@ import type { RawItem } from './types';
 const ITEMS_PER_FEED = 3;
 
 const FEED_SOURCES = [
-  { url: 'https://www.anthropic.com/news/rss.xml', label: 'Anthropic' },
   { url: 'https://openai.com/blog/rss.xml', label: 'OpenAI' },
-  { url: 'https://newsletter.importai.net/feed', label: 'Import AI' },
-  { url: 'https://www.deeplearning.ai/the-batch/rss', label: 'The Batch' },
-  { url: 'https://interconnects.ai/feed', label: 'Interconnects' },
+  { url: 'https://jack-clark.net/feed', label: 'Import AI' },
+  { url: 'https://www.interconnects.ai/feed', label: 'Interconnects' },
 ] as const;
 
 const parser = new Parser();
