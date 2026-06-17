@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#2997ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- 眼睛轮廓 (Track/Focus) -->
+  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+  <!-- AI 瞳孔 (AI) -->
+  <path d="M12 8.5 L12.7 11.3 L15.5 12 L12.7 12.7 L12 15.5 L11.3 12.7 L8.5 12 L11.3 11.3 Z" fill="#2997ff" stroke="none"/>
+</svg>
