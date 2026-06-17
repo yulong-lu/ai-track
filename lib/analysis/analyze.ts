@@ -22,10 +22,22 @@ export async function analyzeItems(items: RawItem[]): Promise<FeedItem[]> {
   return items
     .map(item => {
       const analysis = byId.get(item.id);
-      if (!analysis || typeof analysis.score !== 'number' || !Number.isFinite(analysis.score)) return null;
+      if (!isCompleteAnalysis(analysis)) return null;
       return { ...item, ...analysis } satisfies FeedItem;
     })
     .filter((item): item is FeedItem => item !== null);
+}
+
+// DeepSeek can truncate mid-batch, leaving trailing entries with only an id —
+// guard every field BatchResult declares as required, not just the one that crashes the UI.
+function isCompleteAnalysis(analysis: BatchResult | undefined): analysis is BatchResult {
+  return (
+    !!analysis &&
+    typeof analysis.summary === 'string' && analysis.summary.length > 0 &&
+    typeof analysis.category === 'string' && analysis.category.length > 0 &&
+    typeof analysis.score === 'number' && Number.isFinite(analysis.score) &&
+    Array.isArray(analysis.tags)
+  );
 }
 
 async function analyzeBatch(items: RawItem[], attempt = 0): Promise<BatchResult[]> {
@@ -45,7 +57,12 @@ async function analyzeBatch(items: RawItem[], attempt = 0): Promise<BatchResult[
         { role: 'user', content: buildUserPrompt(input) },
       ],
       response_format: { type: 'json_object' },
+      max_tokens: 8192,
     });
+
+    if (response.choices[0]?.finish_reason === 'length') {
+      throw new Error('analyzeBatch: response truncated (finish_reason=length)');
+    }
 
     const content = response.choices[0]?.message?.content ?? '{}';
     const parsed = JSON.parse(content) as { results?: BatchResult[] };

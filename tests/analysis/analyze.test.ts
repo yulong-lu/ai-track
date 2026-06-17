@@ -90,6 +90,24 @@ describe('analyzeItems', () => {
     expect(items).toHaveLength(0);
   });
 
+  it('drops items where required analysis fields besides score are missing', async () => {
+    mockCreate.mockResolvedValueOnce({
+      choices: [{
+        message: {
+          content: JSON.stringify({
+            results: [{
+              id: 'https://arxiv.org/abs/2506.00001',
+              score: 7.5,
+              // summary, category, tags omitted
+            }],
+          }),
+        },
+      }],
+    } as any);
+    const items = await analyzeItems(RAW_ITEMS);
+    expect(items).toHaveLength(0);
+  });
+
   it('retries once on failure then skips batch', async () => {
     mockCreate
       .mockRejectedValueOnce(new Error('timeout'))
@@ -97,5 +115,22 @@ describe('analyzeItems', () => {
     const items = await analyzeItems(RAW_ITEMS);
     expect(items).toHaveLength(0); // batch skipped after 2 failures
     expect(mockCreate).toHaveBeenCalledTimes(2);
+  });
+
+  it('retries when the response was truncated (finish_reason: length)', async () => {
+    mockCreate
+      .mockResolvedValueOnce({
+        choices: [{
+          finish_reason: 'length',
+          message: { content: JSON.stringify({ results: [{ id: RAW_ITEMS[0].id }] }) },
+        }],
+      } as any)
+      .mockResolvedValueOnce(MOCK_RESPONSE as any);
+
+    const items = await analyzeItems(RAW_ITEMS);
+
+    expect(mockCreate).toHaveBeenCalledTimes(2);
+    expect(items).toHaveLength(1);
+    expect(items[0].score).toBe(9.1);
   });
 });
