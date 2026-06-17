@@ -22,7 +22,7 @@ export async function analyzeItems(items: RawItem[]): Promise<FeedItem[]> {
   return items
     .map(item => {
       const analysis = byId.get(item.id);
-      if (!analysis) return null;
+      if (!analysis || typeof analysis.score !== 'number' || !Number.isFinite(analysis.score)) return null;
       return { ...item, ...analysis } satisfies FeedItem;
     })
     .filter((item): item is FeedItem => item !== null);

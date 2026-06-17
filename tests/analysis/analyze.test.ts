@@ -70,6 +70,26 @@ describe('analyzeItems', () => {
     expect(items).toHaveLength(0);
   });
 
+  it('drops items where score is missing or not a number', async () => {
+    mockCreate.mockResolvedValueOnce({
+      choices: [{
+        message: {
+          content: JSON.stringify({
+            results: [{
+              id: 'https://arxiv.org/abs/2506.00001',
+              summary: 'Allocating more inference-time compute outperforms pre-training.',
+              category: 'Research',
+              tags: ['compute'],
+              // score omitted, as DeepSeek occasionally does
+            }],
+          }),
+        },
+      }],
+    } as any);
+    const items = await analyzeItems(RAW_ITEMS);
+    expect(items).toHaveLength(0);
+  });
+
   it('retries once on failure then skips batch', async () => {
     mockCreate
       .mockRejectedValueOnce(new Error('timeout'))

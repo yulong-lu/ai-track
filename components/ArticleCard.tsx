@@ -31,7 +31,7 @@ export function ArticleCard({ item }: ArticleCardProps) {
       <div className="card-footer">
         <span className="score-display">
           {ARROW_SVG}
-          <span>{item.score.toFixed(1)}</span>
+          <span>{typeof item.score === 'number' ? item.score.toFixed(1) : '—'}</span>
         </span>
         <a
           className="read-link"

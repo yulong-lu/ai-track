@@ -41,6 +41,12 @@ describe('ArticleCard', () => {
     expect(screen.getByText('8.5')).toBeInTheDocument();
   });
 
+  it('renders a fallback instead of crashing when score is missing', () => {
+    const badItem = { ...ITEM, score: undefined as unknown as number };
+    render(<ArticleCard item={badItem} />);
+    expect(screen.getByText('—')).toBeInTheDocument();
+  });
+
   it('renders a "Read" link pointing to the article url', () => {
     render(<ArticleCard item={ITEM} />);
     const readLink = screen.getByRole('link', { name: /Read/i });
