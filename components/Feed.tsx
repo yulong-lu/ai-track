@@ -1,16 +1,15 @@
 import { ArticleCard } from './ArticleCard';
+import { Pagination } from './Pagination';
 import type { FeedItem } from '@/lib/analysis/types';
 
 interface FeedProps {
   items: FeedItem[];
+  page?: number;
 }
 
-const TOP_SCORE = 8.0;
-const MIN_SCORE = 5.0;
-const MAX_TOP = 8;
-const MAX_NOTABLE = 12;
+const PAGE_SIZE = 10;
 
-export function Feed({ items }: FeedProps) {
+export function Feed({ items, page = 1 }: FeedProps) {
   if (items.length === 0) {
     return (
       <main className="feed-container">
@@ -21,29 +20,18 @@ export function Feed({ items }: FeedProps) {
     );
   }
 
-  const top = items.filter(i => i.score >= TOP_SCORE).slice(0, MAX_TOP);
-  const notable = items
-    .filter(i => i.score >= MIN_SCORE && i.score < TOP_SCORE)
-    .slice(0, MAX_NOTABLE);
+  const sorted = [...items].sort((a, b) => b.score - a.score);
+  const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
+  const currentPage = Math.min(Math.max(page, 1), totalPages);
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageItems = sorted.slice(start, start + PAGE_SIZE);
 
   return (
     <main className="feed-container">
-      {top.length > 0 && (
-        <section className="feed-section">
-          <p className="feed-section-label">Top Stories</p>
-          <div className="feed">
-            {top.map(item => <ArticleCard key={item.id} item={item} />)}
-          </div>
-        </section>
-      )}
-      {notable.length > 0 && (
-        <section className="feed-section">
-          <p className="feed-section-label">Also Notable</p>
-          <div className="feed">
-            {notable.map(item => <ArticleCard key={item.id} item={item} />)}
-          </div>
-        </section>
-      )}
+      <div className="feed">
+        {pageItems.map(item => <ArticleCard key={item.id} item={item} />)}
+      </div>
+      {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} />}
     </main>
   );
 }

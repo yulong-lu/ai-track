@@ -225,19 +225,33 @@ body {
   opacity: 0.68;
 }
 
-/* ── Feed sections ───────────────────────────────── */
-.feed-section + .feed-section {
+/* ── Pagination ──────────────────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
   margin-top: 32px;
 }
 
-.feed-section-label {
-  font-size: 11px;
+.pagination-link {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.1px;
+  color: var(--link);
+  text-decoration: none;
+  transition: opacity 0.11s ease;
+}
+
+.pagination-link:hover {
+  opacity: 0.68;
+}
+
+.pagination-current {
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: 10px;
-  padding-left: 2px;
+  letter-spacing: -0.1px;
+  color: var(--text-primary);
 }
 
 /* ── Responsive ─────────────────────────────────── */
