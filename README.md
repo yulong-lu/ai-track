@@ -4,7 +4,8 @@ A news aggregator that reads the AI internet so you don't have to.
 
 AI Track pulls fresh stories from Hacker News, GitHub Trending, Dev.to, arXiv, and a curated set of blogs, then asks an LLM to score, summarize, and tag every item — so the feed surfaces what's actually worth a click, not just what's loudest.
 
-Deployed on Vercel so you don't have to have a cloud server.
+We deploy it on Vercel, eliminating the need for a separate cloud server, and it runs forever.
+<img width="1011" height="898" alt="image" src="https://github.com/user-attachments/assets/f2106a2c-f1a2-461c-b13b-6e362296066b" />
 
 ## How it works
 
@@ -34,5 +35,5 @@ npm run dev
 | `npm test` | Run the test suite (Vitest) |
 | `npm run typecheck` | Type-check the project |
 
-Deployed on Vercel is extremly easy just to write the environment variables in vercel.
+Deploying on Vercel is extremely easy — you only need to set your environment variables on the Vercel dashboard.
 
