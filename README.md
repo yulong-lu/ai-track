@@ -5,7 +5,9 @@ A news aggregator that reads the AI internet so you don't have to.
 AI Track pulls fresh stories from Hacker News, GitHub Trending, Dev.to, arXiv, and a curated set of blogs, then asks an LLM to score, summarize, and tag every item — so the feed surfaces what's actually worth a click, not just what's loudest.
 
 We deploy it on Vercel, eliminating the need for a separate cloud server, and it runs forever.
-<img width="600" height="718" alt="image" src="https://github.com/user-attachments/assets/f2106a2c-f1a2-461c-b13b-6e362296066b" />
+<p align="center">
+  <img width="600" height="718" alt="image" src="https://github.com/user-attachments/assets/f2106a2c-f1a2-461c-b13b-6e362296066b" />
+</p>
 
 ## How it works
 
