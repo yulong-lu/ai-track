@@ -6,8 +6,10 @@ AI Track pulls fresh stories from Hacker News, GitHub Trending, Dev.to, arXiv, a
 
 We deploy it on Vercel, eliminating the need for a separate cloud server, and it runs forever.
 <p align="center">
-  <img width="600" height="718" alt="image" src="https://github.com/user-attachments/assets/f2106a2c-f1a2-461c-b13b-6e362296066b" />
+  <img width="600" height="390" alt="image" src="https://github.com/user-attachments/assets/ec054c6c-d2d0-470b-bb69-433ce96e2d41" />
 </p>
+
+
 
 ## How it works
 
